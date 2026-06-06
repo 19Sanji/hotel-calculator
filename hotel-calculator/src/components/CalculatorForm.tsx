@@ -23,6 +23,7 @@ interface FormValues {
   children: number;
   bookingDate: Dayjs;
   isBirthday: boolean;
+  manualDiscountPercent?: number;
 }
 
 interface Props {
@@ -43,6 +44,7 @@ export const CalculatorForm: React.FC<Props> = ({ roomTypes, onCalculate, error 
       children: values.children ?? 0,
       bookingDate: values.bookingDate.toDate(),
       isBirthday: values.isBirthday ?? false,
+      manualDiscountPercent: values.manualDiscountPercent ?? 0,
     });
   };
 
@@ -129,6 +131,24 @@ export const CalculatorForm: React.FC<Props> = ({ roomTypes, onCalculate, error 
         <Col xs={24} sm={12} md={4}>
           <Form.Item label="Именинник?" name="isBirthday" valuePropName="checked">
             <Switch checkedChildren="Да" unCheckedChildren="Нет" />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} sm={12} md={6}>
+          <Form.Item
+            label="Ручная скидка, %"
+            name="manualDiscountPercent"
+            rules={[
+              {
+                validator(_, value) {
+                  if (value == null || value === '') return Promise.resolve();
+                  if (value >= 0 && value <= 100) return Promise.resolve();
+                  return Promise.reject(new Error('От 0 до 100'));
+                },
+              },
+            ]}
+          >
+            <InputNumber min={0} max={100} style={{ width: '100%' }} placeholder="0" />
           </Form.Item>
         </Col>
       </Row>

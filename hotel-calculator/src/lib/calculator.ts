@@ -81,6 +81,14 @@ export function calculate(input: CalculationInput, roomTypes: RoomType[]): Calcu
     }
   }
 
+  // Manual discount
+  if (input.manualDiscountPercent && input.manualDiscountPercent > 0) {
+    discounts.push({
+      name: `Ручная скидка ${input.manualDiscountPercent}%`,
+      amount: Math.round(totalWithoutDiscount * input.manualDiscountPercent / 100),
+    });
+  }
+
   // Pick best discount: max amount; ties broken by Excel H3 IF-chain order
   const PRIORITY = ['Раннее бронирование', 'Именинник', '3+1', '4+1', 'Длительный заезд'];
   const noDiscount: DiscountResult = { name: 'Нет акции', amount: 0 };
@@ -98,6 +106,8 @@ export function calculate(input: CalculationInput, roomTypes: RoomType[]): Calcu
     }
   }
 
+  const allDiscounts = [noDiscount, ...discounts];
+
   return {
     totalNights,
     weekdayNights,
@@ -108,6 +118,7 @@ export function calculate(input: CalculationInput, roomTypes: RoomType[]): Calcu
     childSurcharge,
     totalWithoutDiscount,
     discount: bestDiscount,
+    allDiscounts,
     totalWithDiscount: totalWithoutDiscount - bestDiscount.amount,
   };
 }

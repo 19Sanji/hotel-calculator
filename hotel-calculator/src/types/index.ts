@@ -17,6 +17,7 @@ export interface CalculationInput {
   children: number;
   bookingDate: Date;
   isBirthday: boolean;
+  manualDiscountPercent?: number;
 }
 
 export interface DiscountResult {
@@ -34,5 +35,6 @@ export interface CalculationResult {
   childSurcharge: number;
   totalWithoutDiscount: number;
   discount: DiscountResult;
+  allDiscounts: DiscountResult[];
   totalWithDiscount: number;
 }
